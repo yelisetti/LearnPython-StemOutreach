@@ -1,16 +1,27 @@
 # Template
 import pygame
 import random
+#will need to tell where the file is, not dependent on the computer we use
+import os
 
 WIDTH = 800
 HEIGHT = 600
 FPS = 30
+
 #COLORS
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
+
+# Setup folder for the assets - art/sound of the game
+#Windows C:\Users\yelisev\PycharmProjects\PythonGUI\
+#Windows C:\Users\yelisev\PycharmProjects\PythonGUI\img
+#Mac:  C:/Users/yelisev/PycharmProjects/PythonGUI/
+#Mac:  C:/Users/yelisev/PycharmProjects/PythonGUI/img
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder, "img")
 
 class Player(pygame.sprite.Sprite):
     # sprite for the player
@@ -19,17 +30,37 @@ class Player(pygame.sprite.Sprite):
         # sprite wont function properly if not included
         pygame.sprite.Sprite.__init__(self)
         # just a image on the screen
-        self.image = pygame.Surface((50, 50))
+        # self.image = pygame.Surface((50, 50))
         # filling the surface with a color
-        self.image.fill(RED)
+        # self.image.fill(RED)
+
+        #using the image
+        self.image = pygame.image.load(os.path.join(img_folder, "onlyrocket.png")).convert()
+        #taking out the background color
+        self.image.set_colorkey(BLACK)
+        #converting the image to a smaller size
+        self.image = pygame.transform.scale(self.image, (150, 150))
+        # command to make sure the backgroud is transparent
+
         # define how tall and big they are
         self.rect = self.image.get_rect()
         #Tells us where and where we want it to be
         self.rect.center = (WIDTH/2, HEIGHT/2)
+        self.y_speed = 5
 
     def update(self):
+        # moving left to right by a speed of 5
         self.rect.x = self.rect.x + 5
+        # means the y should have a bigger area as it goes to the bottom
+        self.rect.y += self.y_speed
         # ensure that that sprite is constantly moving through the screen
+        #reverse direction and go backwards
+        if self.rect.bottom > HEIGHT - 200:
+            self.y_speed = -5
+        # same thing - in reverse of the top
+        if self.rect.top < 200:
+            self.y_speed = 5
+        # Using the same width across the screen
         if self.rect.left > WIDTH:
             self.rect.right = 0
 
